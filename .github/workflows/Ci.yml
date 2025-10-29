@@ -180,16 +180,10 @@ jobs:
     - name: Verify Railway CLI Installation
       run: railway --version
     
-    - name: Link to Railway project
-      run: |
-        echo "🔗 Linking to Railway project..."
-        railway link ${{ secrets.RAILWAY_PROJECT_ID }}
-        echo "✅ Project linked successfully."
-    
     - name: Deploy to Railway
       run: |
         echo "🚀 Deploying to Railway..."
-        railway up
+        railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
         echo "✅ Deployment completed successfully!"
     
     - name: Show Deployment Logs
