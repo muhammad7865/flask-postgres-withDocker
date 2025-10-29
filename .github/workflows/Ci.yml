@@ -167,33 +167,32 @@ jobs:
     name: Deploy to Railway
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && success()
+    
     env:
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}  # 👈 define globally for this job
-      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Verify Railway CLI Installation
-        run: railway --version
-
-      - name: Link to Railway project
-        run: |
-          echo "🔗 Linking to Railway project..."
-          railway link --project $RAILWAY_PROJECT_ID
-          echo "✅ Project linked successfully."
-
-      - name: Deploy to Railway
-        run: |
-          echo "🚀 Deploying to Railway..."
-          railway up --yes
-          echo "✅ Deployment completed successfully!"
-
-      - name: Show Deployment Logs
-        run: |
-          echo "📜 Showing latest deployment logs..."
-          railway logs --lines 30
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Install Railway CLI
+      run: npm install -g @railway/cli
+    
+    - name: Verify Railway CLI Installation
+      run: railway --version
+    
+    - name: Link to Railway project
+      run: |
+        echo "🔗 Linking to Railway project..."
+        railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+        echo "✅ Project linked successfully."
+    
+    - name: Deploy to Railway
+      run: |
+        echo "🚀 Deploying to Railway..."
+        railway up
+        echo "✅ Deployment completed successfully!"
+    
+    - name: Show Deployment Logs
+      run: |
+        echo "📜 Showing latest deployment logs..."
+        railway logs --lines 30
