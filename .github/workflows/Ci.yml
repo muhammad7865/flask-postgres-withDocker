@@ -182,8 +182,8 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          echo "🔐 Logging into Railway using token..."
-          echo "$RAILWAY_TOKEN" | railway login --ci
+          echo "🔐 Logging into Railway..."
+          railway login <<< "${RAILWAY_TOKEN}"
           echo "✅ Successfully authenticated with Railway."
 
       - name: Link to Railway project
@@ -192,13 +192,14 @@ jobs:
         run: |
           echo "🔗 Linking to Railway project..."
           railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
+          echo "✅ Project linked successfully."
 
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "🚀 Deploying to Railway..."
-          railway up --ci
+          railway up --yes
           echo "✅ Deployment completed successfully!"
 
       - name: Show Deployment Logs
