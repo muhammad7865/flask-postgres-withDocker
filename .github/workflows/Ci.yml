@@ -189,8 +189,10 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "🚀 Deploying to Railway..."
-          railway up --service flask-postgresql --ci --detach
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway up --ci --detach
           echo "✅ Deployment triggered successfully!"
+
 
       - name: Stream Deployment Logs
         env:
