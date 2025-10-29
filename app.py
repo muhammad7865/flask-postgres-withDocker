@@ -71,6 +71,20 @@ def request_loader(request):
 # Create the app instance for Gunicorn to find
 app = create_app()
 
+from flask import render_template
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/login")
+def login_page():
+    return render_template("login.html")
+
+@app.route("/users")
+def users_page():
+    return render_template("users.html")
+
 
 # --- CLI Runner (for local development only, not used by Gunicorn) ---
 if __name__ == '__main__':

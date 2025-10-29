@@ -1,37 +1,36 @@
 services:
-  # 1. Database Service (PostgreSQL)
-  db:
-    image: postgres:14-alpine
-    container_name: postgres_db
-    environment:
-      # Use variables from .env file
-      POSTGROES_USER: ${DB_USER}       # Should match .env
-      POSTGRES_PASSWORD: ${DB_PASSWORD} # Should match .env
-      POSTGRES_DB: ${DB_NAME}         # Should match .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    # No ports needed for internal communication unless debugging
-
-  # 2. App Service (Flask Backend/Frontend)
   app:
-    build: . # Build using the Dockerfile in the current directory
+    build: .
     container_name: flask_app
-    env_file:
-      - .env # Load environment variables from .env
-    # --- ADD PYTHONPATH ---
-    environment:
-      - PYTHONPATH=/app
-    # --- END PYTHONPATH ---
     ports:
-      - "5000:5000" # Expose the app port to the host machine
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
     depends_on:
-      - db # Ensure DB service starts before the app service
-    # Use sh -c to run multiple commands:
-    # 1. Apply database migrations using flask-migrate
-    # 2. Start the Gunicorn server (only if migrations succeed)
-    command: sh -c "flask db upgrade && python -m gunicorn --bind 0.0.0.0:5000 app:app"
+      - db
+    networks:
+      - app_network
+    env_file:
+      - .env
 
-# Define the persistent volume for the database
+  db:
+    image: postgres:14
+    container_name: flask_db
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app_network
+
 volumes:
-  postgres_data:
+  db_data:
 
+networks:
+  app_network:
+    driver: bridge
