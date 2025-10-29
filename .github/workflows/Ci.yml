@@ -54,19 +54,26 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Use pipenv to run lint tools
+      - name: Install tools and run linters
         run: |
+          # Ensure pip and pipenv are available
           python -m pip install --upgrade pip
-          python -m pip install pipenv
-          # Install project dependencies into the runner environment
+          python -m pip install pipenv || true
+
+          # Try to install project dependencies (best-effort). If pipenv creates its own venv,
+          # we still install flake8/bandit directly to guarantee tools are on PATH.
           if [ -f Pipfile.lock ]; then
-            pipenv install --deploy --system --dev
+            pipenv install --deploy --system --dev || pipenv install --dev || true
           else
-            pipenv install --dev
+            pipenv install --dev || true
           fi
-          # Run linters/security scanners using the same environment
-          pipenv run flake8 . --ignore=E501,W503
-          pipenv run bandit -r . --exclude .venv -ll
+
+          # Ensure lint/security tools are installed in the runner environment PATH
+          pip install --upgrade flake8 bandit || true
+
+          # Run linters/security scanners directly (reliable across environments)
+          flake8 . --ignore=E501,W503
+          bandit -r . --exclude .venv -ll
 
   # -------------------------------
   # 3️⃣ Test (with PostgreSQL service)
