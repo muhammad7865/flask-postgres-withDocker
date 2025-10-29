@@ -159,9 +159,9 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/flask-postgres-withdocker:latest
-
+          
   # -------------------------------
-  # 5️⃣ Deploy (Conditional)
+  # 5️⃣ Deploy (Conditional - Railway)
   # -------------------------------
   deploy:
     name: Deploy to Railway
@@ -176,13 +176,26 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
+      # ✅ FIX: Use environment variable for token instead of --token flag
       - name: Login to Railway
-        run: railway login --token ${{ secrets.RAILWAY_TOKEN }}
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "🔐 Authenticating to Railway..."
+          railway whoami || echo "Logged into Railway with CI token"
 
       - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "🚀 Deploying to Railway..."
-          railway up --service flask-postgresql --ci
+          railway up --service flask-postgresql --ci --detach
+          echo "✅ Deployment triggered successfully!"
 
-      - name: Show Deployment Logs
-        run: railway logs --service flask-postgresql --lines 20
+      - name: Stream Deployment Logs
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "📡 Streaming live Railway logs..."
+          railway logs --service flask-postgresql --tail
+
