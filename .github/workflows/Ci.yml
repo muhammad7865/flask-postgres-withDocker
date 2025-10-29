@@ -23,10 +23,17 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install dependencies (Pipfile)
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m pip install pipenv
+          # Install project dependencies from Pipfile/Pipfile.lock into the runner
+          if [ -f Pipfile.lock ]; then
+            pipenv install --deploy --system --dev
+          else
+            pipenv install --dev
+          fi
+          # Ensure lint/test tools are available on the system Python
           pip install flake8 bandit pytest
 
   # -------------------------------
@@ -87,10 +94,16 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install dependencies (Pipfile)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install pipenv
+          if [ -f Pipfile.lock ]; then
+            pipenv install --deploy --system --dev
+          else
+            pipenv install --dev
+          fi
+          # psycopg2-binary is sometimes required for tests in CI runners
           pip install pytest psycopg2-binary
 
       - name: Wait for PostgreSQL
