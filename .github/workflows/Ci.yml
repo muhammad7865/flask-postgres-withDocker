@@ -21,7 +21,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          # Match the Python version required by Pipfile (3.8) so pipenv can find the interpreter
+          python-version: '3.8'
 
       - name: Install dependencies (Pipfile)
         run: |
@@ -51,7 +52,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.8'
 
       - name: Use pipenv to run lint tools
         run: |
@@ -97,7 +98,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.8'
 
       - name: Install dependencies (Pipfile)
         run: |
