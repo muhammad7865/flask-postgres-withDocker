@@ -10,161 +10,165 @@ jobs:
   # -------------------------------
   # 1️⃣ Build & Install dependencies
   # -------------------------------
-#   build:
-#     name: Build & Install
-#     runs-on: ubuntu-latest
+  build:
+    name: Build & Install
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-#           # Match the Python version required by Pipfile (3.8) so pipenv can find the interpreter
-#           python-version: '3.8'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          # Match the Python version required by Pipfile (3.8) so pipenv can find the interpreter
+          python-version: '3.8'
 
-#       - name: Install dependencies (Pipfile)
-#         run: |
-#           python -m pip install --upgrade pip
-#           python -m pip install pipenv
-#           # Install project dependencies from Pipfile/Pipfile.lock into the runner
-#           if [ -f Pipfile.lock ]; then
-#             pipenv install --deploy --system --dev
-#           else
-#             pipenv install --dev
-#           fi
-#           # Ensure lint/test tools are available on the system Python
-#           pip install flake8 bandit pytest
+      - name: Install dependencies (Pipfile)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipenv
+          # Install project dependencies from Pipfile/Pipfile.lock into the runner
+          if [ -f Pipfile.lock ]; then
+            pipenv install --deploy --system --dev
+          else
+            pipenv install --dev
+          fi
+          # Ensure lint/test tools are available on the system Python
+          pip install flake8 bandit pytest
 
-#   # -------------------------------
-#   # 2️⃣ Lint & Security Scan
-#   # -------------------------------
-#   lint:
-#     name: Lint & Security Scan
-#     runs-on: ubuntu-latest
-#     needs: build
+  #   # -------------------------------
+  #   # 2️⃣ Lint & Security Scan
+  #   # -------------------------------
+  lint:
+    name: Lint & Security Scan
+    runs-on: ubuntu-latest
+    needs: build
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.8'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
 
-#       - name: Install tools and run linters
-#         run: |
-#           # Ensure pip and pipenv are available
-#           python -m pip install --upgrade pip
-#           python -m pip install pipenv || true
+      - name: Install tools and run linters
+        run: |
+          # Ensure pip and pipenv are available
+          python -m pip install --upgrade pip
+          python -m pip install pipenv || true
 
-#           # Try to install project dependencies (best-effort). If pipenv creates its own venv,
-#           # we still install flake8/bandit directly to guarantee tools are on PATH.
-#           if [ -f Pipfile.lock ]; then
-#             pipenv install --deploy --system --dev || pipenv install --dev || true
-#           else
-#             pipenv install --dev || true
-#           fi
+          # Try to install project dependencies (best-effort). If pipenv creates its own venv,
+          # we still install flake8/bandit directly to guarantee tools are on PATH.
+          if [ -f Pipfile.lock ]; then
+            pipenv install --deploy --system --dev || pipenv install --dev || true
+          else
+            pipenv install --dev || true
+          fi
 
-#           # Ensure lint/security tools are installed in the runner environment PATH
-#           pip install --upgrade flake8 bandit || true
+          # Ensure lint/security tools are installed in the runner environment PATH
+          pip install --upgrade flake8 bandit || true
 
-#           # Run linters/security scanners directly (reliable across environments)
-#           flake8 . --ignore=E501,W503
-#           bandit -r . --exclude .venv -ll
+          # Run linters/security scanners directly (reliable across environments)
+          flake8 . --ignore=E501,W503
+          bandit -r . --exclude .venv -ll
 
-#   # -------------------------------
-#   # 3️⃣ Test (with PostgreSQL service)
-#   # -------------------------------
-#   test:
-#     name: Run Tests (with DB)
-#     runs-on: ubuntu-latest
-#     needs: [lint]
+  #   # -------------------------------
+  #   # 3️⃣ Test (with PostgreSQL service)
+  #   # -------------------------------
+  test:
+    name: Run Tests (with DB)
+    runs-on: ubuntu-latest
+    needs: [lint]
 
-#     services:
-#       postgres:
-#         image: postgres:14
-#         env:
-#           POSTGRES_USER: postgres
-#           POSTGRES_PASSWORD: postgres
-#           POSTGRES_DB: test_db
-#         ports:
-#           - 5432:5432
-#         options: >-
-#           --health-cmd="pg_isready -U postgres"
-#           --health-interval=10s
-#           --health-timeout=5s
-#           --health-retries=5
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.8'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
 
-#       - name: Install dependencies (Pipfile)
-#         run: |
-#           python -m pip install --upgrade pip
-#           python -m pip install pipenv
-#           if [ -f Pipfile.lock ]; then
-#             pipenv install --deploy --system --dev
-#           else
-#             pipenv install --dev
-#           fi
-#           # psycopg2-binary is sometimes required for tests in CI runners
-#           pip install pytest psycopg2-binary
+      - name: Install dependencies (Pipfile)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipenv
+          if [ -f Pipfile.lock ]; then
+            pipenv install --deploy --system --dev
+          else
+            pipenv install --dev
+          fi
+          # psycopg2-binary is sometimes required for tests in CI runners
+          pip install pytest psycopg2-binary
 
-#       - name: Wait for PostgreSQL
-#         run: |
-#           until pg_isready -h localhost -p 5432 -U postgres; do
-#             echo "Waiting for database..."
-#             sleep 2
-#           done
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for database..."
+            sleep 2
+          done
 
-#       - name: Run Tests
-#         env:
-#           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-#           FLASK_ENV: testing
-#         run: |
-#           pytest -v || exit 1
+      - name: Run Tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+          FLASK_ENV: testing
+        run: |
+          pytest -v || exit 1
 
-#   # -------------------------------
-#   # 4️⃣ Build Docker Image
-#   # -------------------------------
-#   docker-build:
-#     name: Build & Push Docker Image
-#     runs-on: ubuntu-latest
-#     needs: [test]
-#       if: success() # Only run if tests pass
+  #   # -------------------------------
+  #   # 4️⃣ Build Docker Image
+  #   # -------------------------------
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
+  docker-build:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: success()
 
-#       - name: Log in to Docker Hub
-#         uses: docker/login-action@v3
-#         with:
-#           username: ${{ secrets.DOCKER_USERNAME }}
-#           password: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-#       - name: Build and push Docker image
-#         uses: docker/build-push-action@v3
-#         with:
-#           context: .
-#           file: ./Dockerfile
-#           push: true
-#           tags: ${{ secrets.DOCKER_USERNAME }}/flask-postgres-withdocker:latest
-          
-# Stage 5: Deploy (Conditional - only when tests pass and branch = main)
-   deploy:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/flask-postgres-withdocker:latest
+
+  #   # -------------------------------
+  #   # 2️⃣ Lint & Security Scan
+  #   # -------------------------------
+
+  deploy:
     name: Deploy (Conditional)
     runs-on: ubuntu-latest
-    # needs: [docker-build]
+    needs: [docker-build]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
@@ -234,4 +238,3 @@ jobs:
           echo "✅ All CI/CD stages completed successfully"
           echo "✅ Docker image built and pushed to registry"
           echo "✅ Application ready for deployment"
-
