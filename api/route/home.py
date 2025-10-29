@@ -28,4 +28,3 @@ def welcome():
     result = WelcomeModel()
 
     return WelcomeSchema().dump(result), 200
-
