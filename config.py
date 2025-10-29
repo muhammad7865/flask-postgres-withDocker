@@ -14,7 +14,6 @@ def get_db_uri():
         port=environ.get('DB_PORT'),
         database=environ.get('DB_NAME')
     )
-
-
 def get_secret_key():
     return environ.get('SECRET_KEY')
+

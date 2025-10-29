@@ -4,11 +4,8 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-
-# --- FIXED IMPORT ---
-# Import get_db_uri directly from config.py in the root
 from config import get_db_uri
-# --- END FIX ---
+from db import db
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -27,7 +24,6 @@ if config.config_file_name is not None:
 # --- Import Base from your models for autogenerate support ---
 # Assuming your models use the 'db' object from db.py
 # If your models are defined differently, adjust this import
-from db import db
 target_metadata = db.Model.metadata
 # --- End Import Base ---
 

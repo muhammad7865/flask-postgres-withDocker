@@ -1,16 +1,120 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 50px;
-  background: #f4f4f9;
-  color: #333;
+  background: #0f172a;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-h1 {
-  color: #007bff;
+
+/* Navbar */
+.navbar {
+  background: #1e293b;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
-a {
-  color: #007bff;
+
+.navbar h2 {
+  color: #38bdf8;
+}
+
+.nav-links a {
+  color: #e2e8f0;
   text-decoration: none;
+  margin-left: 1rem;
+  transition: color 0.2s;
 }
-a:hover {
-  text-decoration: underline;
+
+.nav-links a:hover {
+  color: #38bdf8;
+}
+
+/* Main Content */
+.content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Cards */
+.center-card, .auth-card, .dashboard-card {
+  background: #1e293b;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.25);
+  width: 400px;
+  max-width: 90%;
+}
+
+.center-card h1 {
+  margin-bottom: 1rem;
+  color: #38bdf8;
+}
+
+/* Forms */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  background: #334155;
+  color: white;
+}
+
+button, .btn {
+  background: #38bdf8;
+  color: #111827;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+button:hover, .btn:hover {
+  background: #0ea5e9;
+}
+
+.btn.full {
+  width: 100%;
+}
+
+.btn.secondary {
+  background: #facc15;
+  color: #111827;
+}
+
+.btn.outline {
+  background: transparent;
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+}
+
+.btn.outline:hover {
+  background: #38bdf8;
+  color: #111827;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #1e293b;
+  font-size: 0.9rem;
 }

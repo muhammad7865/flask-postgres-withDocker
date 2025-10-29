@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard-card">
+  <h2>👋 Welcome, <span id="username">User</span></h2>
+  <p>Your account details:</p>
+  <div class="user-info">
+    <p><strong>Email:</strong> <span id="email">Loading...</span></p>
+    <p><strong>ID:</strong> <span id="user_id">Loading...</span></p>
+  </div>
+  <button class="btn" id="logoutBtn">Logout</button>
+</div>
+{% endblock %}

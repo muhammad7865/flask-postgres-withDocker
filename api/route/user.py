@@ -1,7 +1,5 @@
-from http import HTTPStatus
 from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
-from flasgger import swag_from
 import json
 
 # --- FIXED IMPORTS ---
@@ -17,10 +15,10 @@ user_api = Blueprint('api/user', __name__)
 @user_api.route('/', methods=['POST'])
 def create():
     payload = json.loads(request.data)
-    email = payload['email'];
+    email = payload['email']
 
     if User.query.filter_by(email=email).first():
-        return jsonify({ "error": "user already exists" }), 400
+        return jsonify({"error": "user already exists"}), 400
 
     password = bcrypt.generate_password_hash(payload['password']).decode('utf-8')
 
@@ -29,6 +27,7 @@ def create():
     db.session.commit()
 
     return jsonify(payload), 200
+
 
 @user_api.route('/me', methods=['GET'])
 @login_required

@@ -1,7 +1,5 @@
-from http import HTTPStatus
 from flask import Blueprint, jsonify, request
 from flask_login import login_user, logout_user, current_user, login_required
-from flasgger import swag_from
 import json
 
 # --- FIXED IMPORTS ---
@@ -19,10 +17,10 @@ def login():
     payload = json.loads(request.data)
     user = User.query.filter_by(email=payload['email']).first()
     if not user:
-        return jsonify({ "error": "user does not exist" }), 400
+        return jsonify({"error": "user does not exist"}), 400
 
     if not bcrypt.check_password_hash(user.password, payload['password']):
-        return jsonify({ "error": "incorrect password" }), 400
+        return jsonify({"error": "incorrect password"}), 400
 
     user.authenticated = True
     db.session.add(user)
@@ -30,6 +28,7 @@ def login():
     login_user(user)
 
     return '', 200
+
 
 @auth_api.route('/logout', methods=['POST'])
 @login_required

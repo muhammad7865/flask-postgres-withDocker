@@ -1,29 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Flask App{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
-</head>
-<body>
-  <nav class="navbar">
-    <h2>FlaskApp</h2>
-    <div class="nav-links">
-      <a href="/">Home</a>
-      <a href="/login">Login</a>
-      <a href="/register">Register</a>
-      <a href="/apidocs">API Docs</a>
-    </div>
-  </nav>
-
-  <main class="content">
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer>
-    <p>© 2025 Flask API Boilerplate | All Rights Reserved</p>
-  </footer>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="center-card">
+  <h1>🚀 Welcome to Flask API Boilerplate</h1>
+  <p>This is a secure and scalable Flask + PostgreSQL backend with a simple UI.</p>
+  <div class="links">
+    <a href="/login" class="btn">Login</a>
+    <a href="/register" class="btn secondary">Register</a>
+    <a href="/apidocs" class="btn outline">View API Docs</a>
+  </div>
+</div>
+{% endblock %}
