@@ -167,6 +167,9 @@ jobs:
     name: Deploy to Railway
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && success()
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}  # 👈 define globally for this job
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
 
     steps:
       - name: Checkout code
@@ -179,25 +182,18 @@ jobs:
         run: railway --version
 
       - name: Link to Railway project
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "🔗 Linking to Railway project..."
-          railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway link --project $RAILWAY_PROJECT_ID
           echo "✅ Project linked successfully."
 
       - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "🚀 Deploying to Railway..."
           railway up --yes
           echo "✅ Deployment completed successfully!"
 
       - name: Show Deployment Logs
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "📜 Showing latest deployment logs..."
           railway logs --lines 30
-          echo "✅ Logs shown successfully!"
