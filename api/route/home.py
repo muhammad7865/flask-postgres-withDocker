@@ -1,8 +1,11 @@
 from http import HTTPStatus
 from flask import Blueprint
 from flasgger import swag_from
-from paperclip.api.model.welcome import WelcomeModel
-from paperclip.api.schema.welcome import WelcomeSchema
+
+# --- FIXED IMPORTS ---
+from api.model.welcome import WelcomeModel  # NO 'paperclip.' prefix
+from api.schema.welcome import WelcomeSchema # NO 'paperclip.' prefix
+# --- END OF FIXES ---
 
 home_api = Blueprint('api', __name__)
 
@@ -24,3 +27,4 @@ def welcome():
     """
     result = WelcomeModel()
     return WelcomeSchema().dump(result), 200
+

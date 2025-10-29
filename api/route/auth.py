@@ -4,9 +4,11 @@ from flask_login import login_user, logout_user, current_user, login_required
 from flasgger import swag_from
 import json
 
-from paperclip.db import db
-from paperclip.auth import bcrypt
-from paperclip.models.user import User
+# --- FIXED IMPORTS ---
+from db import db
+from auth import bcrypt
+from models.user import User
+# --- END OF FIXES ---
 
 
 auth_api = Blueprint('api/auth', __name__)
