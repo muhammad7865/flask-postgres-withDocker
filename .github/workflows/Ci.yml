@@ -176,28 +176,20 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      # ✅ FIX: Use environment variable for token instead of --token flag
-      - name: Login to Railway
+      - name: Authenticate Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          echo "🔐 Authenticating to Railway..."
-          railway whoami || echo "Logged into Railway with CI token"
+          echo "🔐 Logging into Railway..."
+          railway whoami || echo "✅ Railway token loaded from environment."
+
+      - name: Link Railway Project
+        run: railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
 
       - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "🚀 Deploying to Railway..."
-          railway link --project  ${{ secrets.RAILWAY_PROJECT_ID }}
-          railway up --ci --detach
-          echo "✅ Deployment triggered successfully!"
+          railway up --service <your_service_name> --ci
 
-
-      - name: Stream Deployment Logs
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          echo "📡 Streaming live Railway logs..."
-          railway logs --service flask-postgresql --tail
-
+      - name: Show Deployment Logs
+        run: railway logs --service <your_service_name> --lines 20
