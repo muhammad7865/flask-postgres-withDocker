@@ -53,14 +53,19 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install tools
-        run: pip install flake8 bandit
-
-      - name: Run flake8 (Code Lint)
-        run: flake8 . --ignore=E501,W503
-
-      - name: Run Bandit (Security Scan)
-        run: bandit -r . --exclude .venv -ll
+      - name: Use pipenv to run lint tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipenv
+          # Install project dependencies into the runner environment
+          if [ -f Pipfile.lock ]; then
+            pipenv install --deploy --system --dev
+          else
+            pipenv install --dev
+          fi
+          # Run linters/security scanners using the same environment
+          pipenv run flake8 . --ignore=E501,W503
+          pipenv run bandit -r . --exclude .venv -ll
 
   # -------------------------------
   # 3️⃣ Test (with PostgreSQL service)
