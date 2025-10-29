@@ -176,20 +176,26 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Authenticate Railway
+      - name: Setup Railway authentication
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "🔐 Logging into Railway..."
-          railway whoami || echo "✅ Railway token loaded from environment."
+          export RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }}
+          echo "✅ Railway token loaded from environment."
 
-      - name: Link Railway Project
-        run: railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
+      - name: Link to Railway project
+        run: |
+          echo "🔗 Linking to Railway project..."
+          export RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }}
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
 
       - name: Deploy to Railway
         run: |
           echo "🚀 Deploying to Railway..."
-          railway up --service <your_service_name> --ci
+          export RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }}
+          railway up --ci
+
 
       - name: Show Deployment Logs
         run: railway logs --service <your_service_name> --lines 20
