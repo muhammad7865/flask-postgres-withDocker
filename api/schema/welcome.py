@@ -8,3 +8,4 @@ class WelcomeSchema(Schema):
         fields = ["message"]
 
     message = Str()
+    

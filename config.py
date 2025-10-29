@@ -15,5 +15,6 @@ def get_db_uri():
         database=environ.get('DB_NAME')
     )
 
+
 def get_secret_key():
     return environ.get('SECRET_KEY')

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flasgger import Swagger
 
 # --- Use DIRECT imports for local modules ---
@@ -15,40 +15,34 @@ from api.route.user import user_api
 def create_app():
     app = Flask(__name__)
 
-    # --- Configuration ---
-    # Load DB URI from config function (which reads .env)
     app.config['SQLALCHEMY_DATABASE_URI'] = get_db_uri()
-    # Explicitly set SECRET_KEY (can also be moved to .env via config.py if preferred)
-    app.config['SECRET_KEY'] = 'a_very_secret_key' # Replace 'secret' with a better default
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Disable modification tracking
-
-    # Swagger Config
+    app.config['SECRET_KEY'] = 'a_very_secret_key'  # Replace 'secret' with a better default
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable modification tracking
     app.config['SWAGGER'] = {
         'title': 'Flask API Boilerplate - Docs',
         'uiversion': 3,
-        "specs_route": "/apidocs/" # Make sure swagger UI route is explicit
+        'specs_route': '/apidocs/'  # Make sure swagger UI route is explicit
     }
-    swagger = Swagger(app) # Initialize Swagger AFTER config
 
-    # --- Blueprints ---
-    # Register blueprints (routes)
-    app.register_blueprint(home_api, url_prefix='/api')
-    app.register_blueprint(auth_api, url_prefix='/api/auth')
-    app.register_blueprint(user_api, url_prefix='/api/user')
-
-    # --- Extensions ---
-    # Initialize extensions AFTER config and blueprints
+    # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
     bcrypt.init_app(app)
 
+    # Initialize swagger (do not assign to an unused variable)
+    Swagger(app)
+
+    # Register blueprints
+    app.register_blueprint(home_api, url_prefix='/api')
+    app.register_blueprint(auth_api, url_prefix='/api/auth')
+    app.register_blueprint(user_api, url_prefix='/api/user')
+
     return app
 
-# --- Flask-Login Callbacks ---
+
 @login_manager.user_loader
 def load_user(user_id):
-    # user_id is expected to be unicode, convert to int if necessary
     try:
         user_id = int(user_id)
         return User.query.get(user_id)
@@ -58,36 +52,52 @@ def load_user(user_id):
 
 @login_manager.request_loader
 def request_loader(request):
-    # Simple token-based or session check could go here if needed later
-    # For now, just rely on user_loader and session
-    email = request.form.get('email') # Check if email is in form for basic login attempt
+    # NOTE: request parsing for 'email' should be implemented where request data is available
+    # Keep the existing behavior: if 'email' is provided, try to load the user
+    email = None
+    try:
+        # attempt to get email from form or args; this is a best-effort placeholder
+        email = request.form.get('email') if request.form else None
+    except Exception:
+        email = None
+
     if email:
         user = User.query.filter_by(email=email).first()
         if user:
-            return user # Return user if found based on email in form
-    return None # Otherwise, no user loaded from request directly
+            return user  # Return user if found based on email in form
+    return None
 
 
-# Create the app instance for Gunicorn to find
 app = create_app()
 
-from flask import render_template
 
-@app.route("/")
+@app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
-@app.route("/login")
+
+@app.route('/login')
 def login_page():
-    return render_template("login.html")
+    return render_template('login.html')
 
-@app.route("/users")
+
+@app.route('/users')
 def users_page():
-    return render_template("users.html")
+    return render_template('users.html')
 
 
-# --- CLI Runner (for local development only, not used by Gunicorn) ---
+
+@app.route("/register")
+def register_page():
+    return render_template("register.html")
+
+
+
+@app.route("/dashboard")
+def dashboard_page():
+    return render_template("dashboard.html")
+
+
+
 if __name__ == '__main__':
-    # Note: Gunicorn runs 'app:app', so this block isn't executed by Docker CMD
-    app.run(host='0.0.0.0', port=5000, debug=True) # debug=True is okay for Docker if needed temporarily
-
+    app.run(host='0.0.0.0', port=5000, debug=True)
