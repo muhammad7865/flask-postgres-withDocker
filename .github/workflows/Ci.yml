@@ -162,7 +162,7 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/flask-postgres-withdocker:latest
 
   #   # -------------------------------
-  #   # 2️⃣ Lint & Security Scan
+  #   # 25- Deployment 
   #   # -------------------------------
 
   deploy:
