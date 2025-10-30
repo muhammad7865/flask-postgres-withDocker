@@ -10,7 +10,8 @@
 - flake8 (lint), Bandit (security), pytest (tests)
 - Optional deploy targets: Railway / Render
 
-### Pipeline design
+### Pipeline design 
+
 
 - Stages: build → lint & security → test (with Postgres) → docker-build → deploy
 

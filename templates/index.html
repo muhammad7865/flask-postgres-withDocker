@@ -1,13 +1,19 @@
-{% extends "base.html" %}
-{% block title %}Home{% endblock %}
-{% block content %}
-<div class="center-card">
-  <h1>🚀 Welcome to Flask API Boilerplate</h1>
-  <p>This is a secure and scalable Flask + PostgreSQL backend with a simple UI.</p>
-  <div class="links">
-    <a href="/login" class="btn">Login</a>
-    <a href="/register" class="btn secondary">Register</a>
-    <a href="/apidocs" class="btn outline">View API Docs</a>
-  </div>
-</div>
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<main class="center-card" role="main" aria-labelledby="welcome-heading">
+  <h1 id="welcome-heading">🚀 Welcome to Flask API Boilerplate</h1>
+  <p class="lead">
+    This is a secure and scalable Flask + PostgreSQL backend with a simple UI.
+  </p>
+
+  <nav class="links" role="navigation" aria-label="Quick links">
+    <a href="/login" class="btn" title="Log in">Login</a>
+    <a href="/register" class="btn secondary" title="Create an account"
+      >Register</a
+    >
+    <a href="/apidocs/" class="btn outline" title="Open API documentation"
+      >View API Docs</a
+    >
+  </nav>
+</main>
 {% endblock %}
