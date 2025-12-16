@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: prod   # optional because you also pass -n prod
+data:
+  APP_ENV: "production"
+  DATABASE_HOST: "awais-devops-lab-db.your-rds-endpoint.amazonaws.com"
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: "mydb"
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
