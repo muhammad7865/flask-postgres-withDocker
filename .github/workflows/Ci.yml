@@ -105,16 +105,23 @@ jobs:
 
       - name: Wait for PostgreSQL
         run: |
-          until pg_isready -h localhost -p 5432 -U postgres; do
-            echo "Waiting for database..."
-            sleep 2
+          echo "Waiting for PostgreSQL..."
+          for i in {1..10}; do
+            nc -z localhost 5432 && echo "Postgres is up!" && exit 0
+            echo "Still waiting..."
+            sleep 3
           done
+          echo "Postgres did not start in time"
+          exit 1
 
-      - name: Run tests
+
+      - name: Run Tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           FLASK_ENV: testing
-        run: pytest -v
+        run: |
+          python -m pytest -v
+
 
   # 4️⃣ Docker build & push to ECR
   docker-build:
