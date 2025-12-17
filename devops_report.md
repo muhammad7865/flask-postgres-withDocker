@@ -38,7 +38,3 @@ Logs from lint/test/deploy steps are printed to the Actions job output; deploy c
 - Exclude local `.venv` from security scans to avoid vendor noise; scan dependencies separately with `pip-audit`.
 - Make runtime config resilient (e.g., `DATABASE_URL`, sensible DB defaults) to avoid test-time crashes.
 - Use provider integrations (Railway/Render) for simpler deploys; Actions can trigger deploys and surface logs in pipeline output.
-
----
-
-Generated: concise DevOps summary for repo CI/CD.
